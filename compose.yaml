@@ -1,0 +1,40 @@
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: "http://localhost:3100/loki/api/v1/push"
+    mode: non-blocking
+    max-buffer-size: 4m
+    loki-retries: "3"
+    loki-pipeline-stages: |
+      - multiline:
+        firstline: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}'
+        max_wait_time: 3s
+      - regex:
+        expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},\d{3}) (?P<message>(?s:.*))$$'
+
+services:
+  telegram-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - worker_shared:/app/shared
+    restart: unless-stopped
+    networks:
+      - telegram-app
+      - entire-app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.telegram.loadbalancer.server.port=8000"
+      # Development route
+      - "traefik.http.routers.telegram-local.rule=Host(`localhost`) && PathPrefix(`/v1/api/telegram`)"
+      - "traefik.http.routers.telegram-local.entrypoints=web"
+      - "traefik.http.routers.telegram-local.middlewares=secure-headers@file"
+      # Production route
+      - "traefik.http.routers.telegram-prod.rule=HostRegexp(`^.+\\.loomix\\.ai$$`) && PathPrefix(`/v1/api/telegram`)"
+      - "traefik.http.routers.telegram-prod.entrypoints=websecure"
+      - "traefik.http.routers.telegram-prod.tls=true"
+      - "traefik.http.routers.telegram-prod.middlewares=secure-headers@file, compress@file, api-ratelimit@file"
+    logging: *default-logging
+
+

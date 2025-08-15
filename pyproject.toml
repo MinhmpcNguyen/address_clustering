@@ -1,0 +1,65 @@
+[project]
+dependencies = [
+  "beanie",
+  "cachetools",
+  "fastapi",
+  "motor",
+  "pydantic",
+  "pyjwt",
+  "pymongo",
+  "python-dotenv",
+  "pyyaml",
+  "uvicorn",
+  "opentelemetry-api",
+  "opentelemetry-sdk",
+  "opentelemetry-exporter-otlp-proto-grpc",
+  "opentelemetry-instrumentation-fastapi",
+  "opentelemetry-instrumentation-logging",
+  "prometheus-client",
+  "python-arango",
+  "multithread-parallel-processing",
+  "python-cli-scheduler",
+  "Gensim",
+  "node2vec",
+  "numpy<2.0",
+  "pandas",
+  "click",
+  "lightgbm",
+  "notebook",
+  "psycopg-binary",
+  "seaborn",
+  "sqlalchemy",
+  "imbalanced-learn",
+  "scikit-learn",
+  "matplotlib",
+  "optuna",
+  "joblib",
+  "tqdm",
+  "networkx",
+  "texttable",
+  "web3",
+  "timeout-decorator",
+  "imblearn",
+  "huggingface-hub",
+  "scipy<1.13",
+  "setuptools>=80.9.0",
+]
+description = "Wallet clustering service for blockchain addresses"
+name = "address-clustering-service"
+readme = "README.md"
+requires-python = "==3.11.11"
+version = "0.1.0"
+
+[tool.ruff]
+extend = "../pyproject.toml"
+
+[tool.basedpyright]
+allowedUntypedLibraries = [
+  "dotenv",
+  "datetime",
+  "beanie",
+  "jwt",
+  "opentelemetry",
+  "prometheus_client",
+]
+extends = "../pyproject.toml"
